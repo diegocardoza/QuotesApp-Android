@@ -20,13 +20,31 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("/Users/diegocardoza/Documents/TutorialKeyApps/QuotesKeyApp")
+            storePassword = "123456"
+            keyAlias = "keyQuotesApp"
+            keyPassword = "123456"
+        }
+    }
+
     buildTypes {
-        release {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isDebuggable = false
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            resValue("string","application_name","Quotes")
+            buildConfigField("String","BASE_URL","\"https://quotes-prod-884e2-default-rtdb.firebaseio.com/\"")
+        }
+        getByName("debug") {
+            applicationIdSuffix = ".dev"
+            resValue("string","application_name","[Dev] Quotes")
+            buildConfigField("String","BASE_URL","\"https://quotes-dev-5de0a-default-rtdb.firebaseio.com/\"")
         }
     }
     compileOptions {
@@ -38,6 +56,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
